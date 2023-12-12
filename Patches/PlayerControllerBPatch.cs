@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using GameNetcodeStuff;
@@ -19,6 +20,16 @@ namespace LCTestModChrigi.Patches
         private static RoundManager currentRound;
         private static PlayerControllerB[] players;
         private static bool server = false;
+        private enum Enemy
+        {
+            Spider = 1 ,
+            LootBug,
+            Braken,
+            Thumper,
+            Blob,
+            CoilHead,
+
+        };
 
 
         [HarmonyPatch(typeof(RoundManager), "LoadNewLevel")]
@@ -53,7 +64,7 @@ namespace LCTestModChrigi.Patches
                 //Landmine.SpawnExplosion(___oldPlayerPosition, true);
             }
             // ___drunkness = 10f;
-
+            
             if (server)
             {
                 for (int i = 0; i < players.Length; i++)
@@ -61,7 +72,7 @@ namespace LCTestModChrigi.Patches
                     if (players[i].isPlayerDead && !ded[i])
                     {
                         Debug.Log("SPAWN CAUSE DED");
-                        currentRound.SpawnEnemyOnServer(players[i].placeOfDeath, 0f, 2);
+                        currentRound.SpawnEnemyOnServer(players[i].placeOfDeath, 0f, (System.Int32)Enemy.CoilHead);
                         ded[i] = true;
                     }
                 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GameNetcodeStuff;
 using HarmonyLib;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace LCTestModChrigi.Patches
@@ -14,16 +15,29 @@ namespace LCTestModChrigi.Patches
     internal class ChrigiGamePatch
     {
 
-        private static bool ded = false;
+        private static bool[] ded;
         private static RoundManager currentRound;
+        private static PlayerControllerB[] players;
+        private static bool server = false;
 
 
         [HarmonyPatch(typeof(RoundManager), "LoadNewLevel")]
         [HarmonyPrefix]
         static void LoadNewLevelPatch()
         {
+            server = false;
+
             Debug.Log("SNATCHED ROUNDMANAGER");
             currentRound = RoundManager.Instance;
+            if (currentRound.IsServer)
+            {
+                server = true;
+                Debug.Log("U ARE SERVER BITCH");
+            }
+
+            players = currentRound.playersManager.allPlayerScripts;
+            ded = new bool[players.Length];
+            
         }
 
         [HarmonyPatch(typeof(PlayerControllerB))]
@@ -39,22 +53,20 @@ namespace LCTestModChrigi.Patches
                 //Landmine.SpawnExplosion(___oldPlayerPosition, true);
             }
             // ___drunkness = 10f;
-            ded = false;
-        }
 
-
-        [HarmonyPatch(typeof(PlayerControllerB))]
-        [HarmonyPatch("KillPlayer")]
-        [HarmonyPostfix]
-        static void patchDeath(ref Vector3 ___placeOfDeath)
-        {
-
-            if (!ded)
+            if (server)
             {
-                ded = true;
-                Debug.Log("SPAWN CAUSE DED");
-                currentRound.SpawnEnemyOnServer(___placeOfDeath, 0f, 2);
+                for (int i = 0; i < players.Length; i++)
+                {
+                    if (players[i].isPlayerDead && !ded[i])
+                    {
+                        Debug.Log("SPAWN CAUSE DED");
+                        currentRound.SpawnEnemyOnServer(players[i].placeOfDeath, 0f, 2);
+                        ded[i] = true;
+                    }
+                }
             }
+
         }
         
         

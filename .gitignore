@@ -1,10 +1,4 @@
-.vs
-*.dll
-*.xml
-*.pdb
-*.cache
-*.vsidx
-*.CopyComplete
-obj/Debug/.NETFramework,Version=v4.8.AssemblyAttributes.cs
-obj/Release
-*.txt
+*/obj
+*/bin
+*/Properties
+*/.vs

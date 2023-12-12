@@ -74,7 +74,9 @@ namespace LCTestModChrigi.Patches
                     if (players[i].isPlayerDead && !ded[i])
                     {
                         Debug.Log("SPAWN CAUSE DED");
-                        currentRound.SpawnEnemyOnServer(players[i].placeOfDeath, 0f, (System.Int32)Enemy.NutCracker);
+                        currentRound.SpawnEnemyOnServer(players[i].placeOfDeath, 0f, (System.Int32)Enemy.CoilHead);
+                        string text = "Spawned Enemy on " + players[i].playerUsername + " cus that lil bitch died lmao";
+                        HUDManager.Instance.AddTextToChatOnServer(text, -1);
                         ded[i] = true;
                     }
                 }

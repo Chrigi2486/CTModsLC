@@ -22,13 +22,15 @@ namespace LCTestModChrigi.Patches
         private static bool server = false;
         private enum Enemy
         {
-            Spider = 1 ,
+            Centipede,
+            Spider,
             LootBug,
             Braken,
             Thumper,
             Blob,
             CoilHead,
-
+            SporeLizard,
+            NutCracker,
         };
 
 
@@ -72,7 +74,7 @@ namespace LCTestModChrigi.Patches
                     if (players[i].isPlayerDead && !ded[i])
                     {
                         Debug.Log("SPAWN CAUSE DED");
-                        currentRound.SpawnEnemyOnServer(players[i].placeOfDeath, 0f, (System.Int32)Enemy.CoilHead);
+                        currentRound.SpawnEnemyOnServer(players[i].placeOfDeath, 0f, (System.Int32)Enemy.NutCracker);
                         ded[i] = true;
                     }
                 }

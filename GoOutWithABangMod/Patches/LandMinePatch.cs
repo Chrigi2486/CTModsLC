@@ -52,12 +52,13 @@ namespace GoOutWithABang.Patches
 
         [HarmonyPatch(typeof(Landmine), "Start")]
         [HarmonyPrefix]
-        static void LandminePatch(ref bool ___localPlayerOnMine)
+        static void LandminePatch(ref Landmine __instance)
         {
             if (kys)
             {
-                ___localPlayerOnMine = true;
-                GameNetworkManager.Instance.localPlayerController.teleportedLastFrame = true;
+                Debug.Log("Forcing mine explosion");
+                __instance.ExplodeMineServerRpc();
+                Debug.Log("Mine forcefully activated");
             }
         }
 
@@ -74,6 +75,7 @@ namespace GoOutWithABang.Patches
                     if (players[i].isPlayerDead && !ded[i])
                     {
                         ded[i] = true;
+                        Debug.Log("Spawning mine on dead player");
                         GameObject gameObject = UnityEngine.Object.Instantiate(currentRound.currentLevel.spawnableMapObjects[0].prefabToSpawn, players[i].placeOfDeath, Quaternion.identity, currentRound.mapPropsContainer.transform);
                         gameObject.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
 

@@ -33,17 +33,12 @@ namespace GoOutWithABang.Patches
                 server = true;
             }
 
-            foreach (SpawnableMapObject obj in currentRound.currentLevel.spawnableMapObjects)
-            {
-                Debug.Log(obj.prefabToSpawn.tag);
-            }
-
             players = currentRound.playersManager.allPlayerScripts;
             ded = new bool[players.Length];
 
         }
 
-        [HarmonyPatch(typeof(RoundManager), "SpawnMapObjects")]
+        [HarmonyPatch(typeof(RoundManager), "LoadNewLevelWait")]
         [HarmonyPostfix]
         static void SpawnMapObjectsPatch()
         {

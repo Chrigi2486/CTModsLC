@@ -26,6 +26,7 @@ namespace GoOutWithABang.Patches
         static void LoadNewLevelPatch()
         {
             server = false;
+            kys = false;
 
             currentRound = RoundManager.Instance;
             if (currentRound.IsServer)
@@ -38,10 +39,11 @@ namespace GoOutWithABang.Patches
 
         }
 
-        [HarmonyPatch(typeof(RoundManager), "LoadNewLevelWait")]
+        [HarmonyPatch(typeof(RoundManager), "FinishGeneratingNewLevelClientRpc")]
         [HarmonyPostfix]
-        static void SpawnMapObjectsPatch()
+        static void FinishGeneratingNewLevelClientRpcPatch()
         {
+            Debug.Log("Already finished go kys!!!!!");
             kys = true;
         }
 
@@ -49,6 +51,8 @@ namespace GoOutWithABang.Patches
         [HarmonyPrefix]
         static void LandminePatch(ref Landmine __instance)
         {
+            Debug.Log("Landmine Spawned!!!!!!!!!!!!!!!!");
+
             if (kys)
             {
                 Debug.Log("Forcing mine explosion");

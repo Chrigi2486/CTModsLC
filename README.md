@@ -10,5 +10,5 @@ A mod for testing random things
 The .dll for this mod won't appear in the main directory, as it is only intended for testing
 
 ### GoOutWithABangMod
-[Redacted]  
-We will release the details for this mod later, as not to spoil the others
+Spawns a mine on player and triggers it when they die  
+Currently it breaks general landmines, but a fix for that is on the way

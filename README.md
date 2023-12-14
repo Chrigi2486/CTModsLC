@@ -11,4 +11,3 @@ The .dll for this mod won't appear in the main directory, as it is only intended
 
 ### GoOutWithABangMod
 Spawns a mine on player and triggers it when they die  
-Currently it breaks general landmines, but a fix for that is on the way

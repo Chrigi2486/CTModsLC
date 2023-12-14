@@ -61,7 +61,7 @@ namespace GoOutWithABang.Patches
             }
         }
 
-        [HarmonyPatch(typeof(PlayerControllerB))]
+        [HarmonyPatch(typeof(PlayerControllerB))] // Try KillLocalPlayer.KillPlayer and then spawnExplosion on them
         [HarmonyPatch("Update")]
         [HarmonyPrefix]
         static void PlayerControllerBPatch()
@@ -71,7 +71,7 @@ namespace GoOutWithABang.Patches
             {
                 for (int i = 0; i < players.Length; i++)
                 {
-                    if (players[i].isPlayerDead && !ded[i])
+                    if (players[i].isPlayerDead && !ded[i] && players[i].causeOfDeath != CauseOfDeath.Blast && players[i].causeOfDeath != CauseOfDeath.Strangulation)
                     {
                         ded[i] = true;
                         Debug.Log("Spawning mine on dead player");

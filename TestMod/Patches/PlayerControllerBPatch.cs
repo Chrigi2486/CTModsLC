@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using GameNetcodeStuff;
@@ -16,75 +15,55 @@ namespace LCTestModChrigi.Patches
     internal class ChrigiGamePatch
     {
 
-        private static bool[] ded;
         private static RoundManager currentRound;
-        private static PlayerControllerB[] players;
-        private static bool server = false;
-        private enum Enemy
-        {
-            Centipede,
-            Spider,
-            LootBug,
-            Braken,
-            Thumper,
-            Blob,
-            CoilHead,
-            SporeLizard,
-            NutCracker,
-        };
-
 
         [HarmonyPatch(typeof(RoundManager), "LoadNewLevel")]
         [HarmonyPrefix]
         static void LoadNewLevelPatch()
         {
-            server = false;
 
-            Debug.Log("SNATCHED ROUNDMANAGER");
             currentRound = RoundManager.Instance;
-            if (currentRound.IsServer)
-            {
-                server = true;
-                Debug.Log("U ARE SERVER BITCH");
-            }
 
-            players = currentRound.playersManager.allPlayerScripts;
-            ded = new bool[players.Length];
-            
         }
 
-        [HarmonyPatch(typeof(PlayerControllerB))]
-        [HarmonyPatch("Update")]
-        [HarmonyPostfix]
-        static void infiniteSprintPatch(ref float ___sprintMeter, ref float ___sprintMultiplier, ref float ___drunkness, ref bool ___isSprinting, ref Vector3 ___oldPlayerPosition)
+
+        [HarmonyPatch(typeof(PlayerControllerB), "Update")]
+        [HarmonyPrefix]
+        static void UpdatePatch(ref float ___sprintMeter, ref float ___sprintMultiplier, ref bool ___isSprinting, ref PlayerControllerB __instance)
         {
-            //___sprintMeter = 1f;
+            ___sprintMeter = 1f;
 
             if (___isSprinting)
             {
                 ___sprintMultiplier = 10f;
-                //Landmine.SpawnExplosion(___oldPlayerPosition, true);
-            }
-            // ___drunkness = 10f;
-            
-            if (server)
-            {
-                for (int i = 0; i < players.Length; i++)
-                {
-                    if (players[i].isPlayerDead && !ded[i])
-                    {
-                        Debug.Log("SPAWN CAUSE DED");
-                        currentRound.SpawnEnemyOnServer(players[i].placeOfDeath, 0f, (System.Int32)Enemy.CoilHead);
-                        string text = "Spawned Enemy on " + players[i].playerUsername + " cus that lil bitch died lmao";
-                        HUDManager.Instance.AddTextToChatOnServer(text, -1);
-                        ded[i] = true;
-                    }
-                }
             }
 
         }
-        
-        
+
+
+        [HarmonyPatch(typeof(FlashlightItem), "ItemActivate")]
+        [HarmonyPostfix]
+        static void ItemActivatePatch(ref FlashlightItem __instance)
+        {
+            Debug.Log("ItemActivate ACTIVATED BRUHHHHH");
+
+            PlayerControllerB player = __instance.playerHeldBy;
+
+            NetworkBehaviour baseplayer = (NetworkBehaviour)__instance.playerHeldBy;
+
+            for (int i = 0; i < currentRound.currentLevel.spawnableScrap.Count(); i++)
+            {
+                GameObject objectInPresent = currentRound.currentLevel.spawnableScrap[i].spawnableItem.spawnPrefab;
+                GameObject gameObject = UnityEngine.Object.Instantiate(objectInPresent, baseplayer.transform.position, Quaternion.identity, currentRound.spawnedScrapContainer);
+                GrabbableObject component = gameObject.GetComponent<GrabbableObject>();
+                component.startFallingPosition = baseplayer.transform.position;
+                component.targetFloorPosition = component.GetItemFloorPosition(baseplayer.transform.position);
+                component.SetScrapValue(1000);
+                component.NetworkObject.Spawn();
+            }
+
+        }
+
     }
 
 

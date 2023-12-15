@@ -24,7 +24,7 @@ namespace GoOutWithABang
         private static GoOutWithABangModBase Instance;
 
 
-        internal ManualLogSource mls;
+        public static ManualLogSource mls;
 
 
         void Awake()
@@ -37,10 +37,6 @@ namespace GoOutWithABang
             mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
 
 
-            mls.LogInfo("Time to go out with a bang!");
-            mls.LogInfo("Time to go out with a bang!");
-            mls.LogInfo("Time to go out with a bang!");
-            mls.LogInfo("Time to go out with a bang!");
             mls.LogInfo("Time to go out with a bang!");
 
 

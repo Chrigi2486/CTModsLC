@@ -41,6 +41,9 @@ namespace GoOutWithABang
 
 
             harmony.PatchAll(typeof(LandMinePatch));
+            harmony.PatchAll(typeof(GoOutWithABangModBase));
+
+
 
 
 

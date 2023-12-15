@@ -11,7 +11,7 @@ This mod won't be continously updated
 Currently it increases your sprint speed and spawns all spawnable scrap at your location when you use the flashlight
 
 ### GoOutWithABangMod
-Spawns a mine on player and triggers it when they die, unless they die to an explosion, strangulation (masked, braken) or unknown  
+Spawns a mine on player and triggers it when they die, unless they die to explosion, strangulation (masked, braken), suffocation (mask, centipede) or unknown  
 
 ### KarmaForBeingAnnoyingMod
 Blows up the player who uses any of the annoying scrap that makes sound (clown horn, blow horn, ...)  

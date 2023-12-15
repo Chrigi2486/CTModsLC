@@ -19,7 +19,6 @@ namespace GoOutWithABang.Patches
 
         private static bool ded;
         private static RoundManager currentRound;
-        private static PlayerControllerB[] players;
         private static bool server = false;
         private static bool kys = false;
 
@@ -35,8 +34,6 @@ namespace GoOutWithABang.Patches
             {
                 server = true;
             }
-
-            players = currentRound.playersManager.allPlayerScripts;
             ded = false;
 
         }
@@ -63,27 +60,22 @@ namespace GoOutWithABang.Patches
             }
         }
 
-        [HarmonyPatch(typeof(PlayerControllerB))] // Try KillLocalPlayer.KillPlayer and then spawnExplosion on them
-        //[HarmonyPatch("Update")]
+        [HarmonyPatch(typeof(PlayerControllerB))]
         [HarmonyPatch("KillPlayerServerRpc")]
         [HarmonyPostfix]
         static void PlayerControllerBPatch(PlayerControllerB __instance)
         {
-
-            /* if (server)
+            NetworkBehaviour baseplayer = (NetworkBehaviour)__instance;
+            if (server && (!baseplayer.IsOwnedByServer || !ded) && __instance.isPlayerDead && __instance.causeOfDeath != CauseOfDeath.Blast && __instance.causeOfDeath != CauseOfDeath.Suffocation && __instance.causeOfDeath != CauseOfDeath.Unknown)
             {
-                for (int i = 0; i < players.Length; i++)
+                if (baseplayer.IsOwnedByServer)
                 {
-                    if (players[i].isPlayerDead && !ded[i] && players[i].causeOfDeath != CauseOfDeath.Blast && players[i].causeOfDeath != CauseOfDeath.Suffocation && players[i].causeOfDeath != CauseOfDeath.Unknown)
-                    {
-                        ded[i] = true;
-            */
-            if (server && __instance.isPlayerDead && __instance.causeOfDeath != CauseOfDeath.Blast && __instance.causeOfDeath != CauseOfDeath.Suffocation && __instance.causeOfDeath != CauseOfDeath.Unknown)
-            {
+                    ded = true;
+                }
                 logger.LogInfo("Spawning mine on dead player");
                 GameObject gameObject = UnityEngine.Object.Instantiate(currentRound.currentLevel.spawnableMapObjects[0].prefabToSpawn, __instance.placeOfDeath, Quaternion.identity, currentRound.mapPropsContainer.transform);
                 gameObject.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
-
+                
 
             }
 

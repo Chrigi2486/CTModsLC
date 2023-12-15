@@ -23,7 +23,7 @@ namespace KarmaForBeingAnnoying
         private static KarmaForBeingAnnoyingModBase Instance;
 
 
-        internal ManualLogSource mls;
+        public static ManualLogSource mls;
 
 
         void Awake()

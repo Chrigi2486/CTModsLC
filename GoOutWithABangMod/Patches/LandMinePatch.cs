@@ -64,24 +64,26 @@ namespace GoOutWithABang.Patches
         }
 
         [HarmonyPatch(typeof(PlayerControllerB))] // Try KillLocalPlayer.KillPlayer and then spawnExplosion on them
-        [HarmonyPatch("Update")]
+        //[HarmonyPatch("Update")]
+        [HarmonyPatch("KillPlayer")]
         [HarmonyPrefix]
-        static void PlayerControllerBPatch()
+        static void PlayerControllerBPatch(PlayerControllerB __instance)
         {
 
-            if (server)
+            /* if (server)
             {
                 for (int i = 0; i < players.Length; i++)
                 {
                     if (players[i].isPlayerDead && !ded[i] && players[i].causeOfDeath != CauseOfDeath.Blast && players[i].causeOfDeath != CauseOfDeath.Suffocation && players[i].causeOfDeath != CauseOfDeath.Unknown)
                     {
                         ded[i] = true;
-                        logger.LogInfo("Spawning mine on dead player");
-                        GameObject gameObject = UnityEngine.Object.Instantiate(currentRound.currentLevel.spawnableMapObjects[0].prefabToSpawn, players[i].placeOfDeath, Quaternion.identity, currentRound.mapPropsContainer.transform);
+            */
+            if (((NetworkBehaviour)__instance).IsOwner && __instance.isPlayerDead)
+            {
+                logger.LogInfo("Spawning mine on dead player");
+                        GameObject gameObject = UnityEngine.Object.Instantiate(currentRound.currentLevel.spawnableMapObjects[0].prefabToSpawn, __instance.placeOfDeath, Quaternion.identity, currentRound.mapPropsContainer.transform);
                         gameObject.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
 
-                    }
-                }
             }
 
         }

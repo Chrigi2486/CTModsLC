@@ -73,7 +73,7 @@ namespace GoOutWithABang.Patches
             {
                 for (int i = 0; i < players.Length; i++)
                 {
-                    if (players[i].isPlayerDead && !ded[i] && players[i].causeOfDeath != CauseOfDeath.Blast && players[i].causeOfDeath != CauseOfDeath.Strangulation && players[i].causeOfDeath != CauseOfDeath.Unknown)
+                    if (players[i].isPlayerDead && !ded[i] && players[i].causeOfDeath != CauseOfDeath.Blast && players[i].causeOfDeath != CauseOfDeath.Suffocation && players[i].causeOfDeath != CauseOfDeath.Unknown)
                     {
                         ded[i] = true;
                         logger.LogInfo("Spawning mine on dead player");

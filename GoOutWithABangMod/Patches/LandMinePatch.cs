@@ -66,7 +66,7 @@ namespace GoOutWithABang.Patches
         static void PlayerControllerBPatch(PlayerControllerB __instance)
         {
             NetworkBehaviour baseplayer = (NetworkBehaviour)__instance;
-            if (server && (!baseplayer.IsOwnedByServer || !ded) && __instance.isPlayerDead && __instance.causeOfDeath != CauseOfDeath.Blast && __instance.causeOfDeath != CauseOfDeath.Suffocation && __instance.causeOfDeath != CauseOfDeath.Unknown)
+            if (server && (!baseplayer.IsOwnedByServer || !ded) && __instance.isPlayerDead && __instance.causeOfDeath != CauseOfDeath.Blast && __instance.causeOfDeath != CauseOfDeath.Suffocation && __instance.causeOfDeath != CauseOfDeath.Unknown && __instance.causeOfDeath != CauseOfDeath.Strangulation)
             {
                 if (baseplayer.IsOwnedByServer)
                 {

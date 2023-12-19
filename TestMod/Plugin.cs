@@ -23,7 +23,7 @@ namespace LCTestModChrigi
         private static TestModBase Instance;
 
 
-        internal ManualLogSource mls;
+        public static ManualLogSource mls;
 
 
         void Awake()

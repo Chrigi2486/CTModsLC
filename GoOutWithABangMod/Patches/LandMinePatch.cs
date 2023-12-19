@@ -21,6 +21,7 @@ namespace GoOutWithABang.Patches
         private static RoundManager currentRound;
         private static bool server = false;
         private static bool kys = false;
+        private static int mine = 0;
 
         [HarmonyPatch(typeof(RoundManager), "LoadNewLevel")]
         [HarmonyPrefix]
@@ -44,6 +45,16 @@ namespace GoOutWithABang.Patches
         {
             logger.LogInfo("Level Loaded, any new mine spawned will blow up instantly");
             kys = true;
+            int len = currentRound.currentLevel.spawnableMapObjects.Count();
+            for (int i = 0; i < len; i++)
+            {
+                if (currentRound.currentLevel.spawnableMapObjects[i].prefabToSpawn.name == "Landmine")
+                {
+                    logger.LogInfo("Found Mine Index: " + i);
+                    mine = i;
+                    break;
+                }
+            }
         }
 
         [HarmonyPatch(typeof(Landmine), "Start")]
@@ -66,14 +77,14 @@ namespace GoOutWithABang.Patches
         static void PlayerControllerBPatch(PlayerControllerB __instance)
         {
             NetworkBehaviour baseplayer = (NetworkBehaviour)__instance;
-            if (server && (!baseplayer.IsOwnedByServer || !ded) && __instance.isPlayerDead && __instance.causeOfDeath != CauseOfDeath.Blast && __instance.causeOfDeath != CauseOfDeath.Suffocation && __instance.causeOfDeath != CauseOfDeath.Unknown && __instance.causeOfDeath != CauseOfDeath.Strangulation)
+            if (server && __instance.isPlayerDead && (!baseplayer.IsOwnedByServer || !ded) && __instance.causeOfDeath != CauseOfDeath.Blast && __instance.causeOfDeath != CauseOfDeath.Unknown) // && __instance.causeOfDeath != CauseOfDeath.Suffocation  && __instance.causeOfDeath != CauseOfDeath.Strangulation)
             {
                 if (baseplayer.IsOwnedByServer)
                 {
                     ded = true;
                 }
                 logger.LogInfo("Spawning mine on dead player");
-                GameObject gameObject = UnityEngine.Object.Instantiate(currentRound.currentLevel.spawnableMapObjects[0].prefabToSpawn, __instance.placeOfDeath, Quaternion.identity, currentRound.mapPropsContainer.transform);
+                GameObject gameObject = UnityEngine.Object.Instantiate(currentRound.currentLevel.spawnableMapObjects[mine].prefabToSpawn, __instance.placeOfDeath, Quaternion.identity, currentRound.mapPropsContainer.transform);
                 gameObject.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
                 
 

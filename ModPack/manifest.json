@@ -1,0 +1,9 @@
+{
+    "name": "CTModsPack",
+    "description": "Pack for all our Mods",
+    "version_number": "1.0.0",
+    "website_url": "https://github.com/Chrigi2486/CTModsLC/",
+    "dependencies": ["BepInEx-BepInExPack-5.4.2100", "CTMods-GoOutWithABang-1.0.0","CTMods-KarmaForBeingAnnoying-1.1.0","CTMods-ToemmsensCursedSoundMod-1.0.4"
+
+    ]
+}

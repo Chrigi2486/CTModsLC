@@ -1,0 +1,9 @@
+{
+    "name": "GoOutWithABang",
+    "description": "Explode when dying. (spawns a mine when you die) Configurable.",
+    "version_number": "1.0.0",
+    "website_url": "https://github.com/Chrigi2486/CTModsLC/tree/main",
+    "dependencies": ["BepInEx-BepInExPack-5.4.2100"
+
+    ]
+}

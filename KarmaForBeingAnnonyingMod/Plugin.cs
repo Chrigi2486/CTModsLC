@@ -25,6 +25,11 @@ namespace KarmaForBeingAnnoying
 
         internal static ConfigEntry<bool> AnnoyingItemSetting;
         internal static ConfigEntry<float> ProbabilitySetting;
+        internal static ConfigEntry<float> ProbabilityRemoteSetting;
+        internal static ConfigEntry<float> DelaySetting;
+        internal static ConfigEntry<float> KillRangeSetting;
+        internal static ConfigEntry<float> DamageRangeSetting;
+        internal static ConfigEntry<bool> RemoteSetting;
         public static ManualLogSource mls;
 
 
@@ -34,13 +39,12 @@ namespace KarmaForBeingAnnoying
             {
                 Instance = this;
             }
-            AnnoyingItemSetting = ((BaseUnityPlugin)this).Config.Bind<bool>("KarmaForBeingAnnoying Settings", "ON OFF switch", true, "Turns functionality on or off");
-            ProbabilitySetting = ((BaseUnityPlugin)this).Config.Bind<float>("Probability Settings", "General Probability", 0.1f, "Set probability of exploding: default 0.1f");
+            
             mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
 
 
             mls.LogInfo("________________\nKarma is a bitch!\n________________");
-
+            SetCFG();
 
             harmony.PatchAll(typeof(NoisemakerPropPatch));
 
@@ -48,5 +52,15 @@ namespace KarmaForBeingAnnoying
 
 
         }
+        private static void SetCFG()
+        {
+            AnnoyingItemSetting = Instance.Config.Bind<bool>("KarmaForBeingAnnoying Settings", "ON OFF switch", true, "Turns functionality on or off");
+            ProbabilitySetting = Instance.Config.Bind<float>("Probability Settings", "General Probability", 0.1f, "Set probability of exploding");
+            ProbabilityRemoteSetting = Instance.Config.Bind<float>("Probability Settings", "Remote Probability", 0.1f, "Set probability of exploding when using Remote");
+            DelaySetting = Instance.Config.Bind<float>("Delay Settings", "General Delay", 0.5f, "Set delay of explosion");
+            KillRangeSetting = Instance.Config.Bind<float>("Kill Range Settings", "General Kill Range", 10f, "Set kill range of explosion");
+            DamageRangeSetting = Instance.Config.Bind<float>("Damage Range Settings", "General Damage Range", 1f, "Set damage range of explosion");
+            RemoteSetting = Instance.Config.Bind<bool>("KarmaForBeingAnnoying Settings", "UseOnRemote", true, "Defines if Remote sets off explosion based on params");
+        } 
     }
 }

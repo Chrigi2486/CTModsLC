@@ -37,7 +37,7 @@ namespace KarmaForBeingAnnoying.Patches
 
             if (((KarmaForBeingAnnoyingModBase.AnnoyingItemSetting.Value && baseplayer.IsOwner && ___playerHeldBy.isPlayerControlled && (!baseplayer.IsServer || ___playerHeldBy.isHostPlayerObject)) || ___playerHeldBy.isTestingPlayer) && UnityEngine.Random.value < KarmaForBeingAnnoyingModBase.ProbabilitySetting.Value)
             {
-                __instance.StartCoroutine(DelayedExplosion(baseplayer.transform.position, true, 10f, 1f, 0.5f));
+                __instance.StartCoroutine(DelayedExplosion(baseplayer.transform.position, true, KarmaForBeingAnnoyingModBase.KillRangeSetting.Value, KarmaForBeingAnnoyingModBase.DamageRangeSetting.Value, KarmaForBeingAnnoyingModBase.DelaySetting.Value));
                 logger.LogInfo("Karma");
             }
             /*else
@@ -47,6 +47,21 @@ namespace KarmaForBeingAnnoying.Patches
             
 
 
+        }
+
+        [HarmonyPatch(typeof(RemoteProp), "ItemActivate")]
+        [HarmonyPostfix]
+        static void RemotePropPatch(ref PlayerControllerB ___playerHeldBy, ref RemoteProp __instance)
+        {
+            logger.LogInfo("RemotePropPatch ACTIVATED BRUHHHHH");
+
+            NetworkBehaviour baseplayer = (NetworkBehaviour)__instance;
+
+            if (((KarmaForBeingAnnoyingModBase.RemoteSetting.Value && baseplayer.IsOwner && ___playerHeldBy.isPlayerControlled && (!baseplayer.IsServer || ___playerHeldBy.isHostPlayerObject)) || ___playerHeldBy.isTestingPlayer) && UnityEngine.Random.value < KarmaForBeingAnnoyingModBase.ProbabilityRemoteSetting.Value)
+            {
+                __instance.StartCoroutine(DelayedExplosion(baseplayer.transform.position, true, KarmaForBeingAnnoyingModBase.KillRangeSetting.Value, KarmaForBeingAnnoyingModBase.DamageRangeSetting.Value, KarmaForBeingAnnoyingModBase.DelaySetting.Value));
+                logger.LogInfo("Karma");
+            }
         }
     }
 }

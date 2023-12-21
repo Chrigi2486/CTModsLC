@@ -16,7 +16,7 @@ namespace KarmaForBeingAnnoying
     {
         private const string modGUID = "Chrigi.KarmaForBeingAnnoyingMod";
         private const string modName = "Karma For Being Annoying Mod";
-        private const string modVersion = "1.0.0";
+        private const string modVersion = "1.1.0";
 
         private readonly Harmony harmony = new Harmony(modGUID);
 
@@ -29,6 +29,7 @@ namespace KarmaForBeingAnnoying
         internal static ConfigEntry<float> ProbabilityAirhornSetting;
         internal static ConfigEntry<float> ProbabilityClownhornSetting;
         internal static ConfigEntry<float> ProbabilityCashRegisterSetting;
+        internal static ConfigEntry<float> ProbabilityHairDryerSetting;
         internal static ConfigEntry<float> DelaySetting;
         internal static ConfigEntry<float> KillRangeSetting;
         internal static ConfigEntry<float> DamageRangeSetting;
@@ -63,6 +64,7 @@ namespace KarmaForBeingAnnoying
             ProbabilityAirhornSetting = Instance.Config.Bind<float>("Probability Settings", "Airhorn Probability", 0.1f, "Set probability of exploding when using Airhorn");
             ProbabilityClownhornSetting = Instance.Config.Bind<float>("Probability Settings", "Clownhorn Probability", 0.1f, "Set probability of exploding when using Clownhorn");
             ProbabilityCashRegisterSetting = Instance.Config.Bind<float>("Probability Settings", "Cashregister Probability", 0.1f, "Set probability of exploding when using Cashregister");
+            ProbabilityHairDryerSetting = Instance.Config.Bind<float>("Probability Settings", "Hairdryer Probability", 0.1f, "Set probability of exploding when using Hairdryer");
             DelaySetting = Instance.Config.Bind<float>("Delay Settings", "General Delay", 0.5f, "Set delay of explosion");
             KillRangeSetting = Instance.Config.Bind<float>("Kill Range Settings", "General Kill Range", 10f, "Set kill range of explosion");
             DamageRangeSetting = Instance.Config.Bind<float>("Damage Range Settings", "General Damage Range", 1f, "Set damage range of explosion");

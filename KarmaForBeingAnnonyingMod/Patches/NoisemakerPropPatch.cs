@@ -50,6 +50,9 @@ namespace KarmaForBeingAnnoying.Patches
                     case "cashregisteritem":
                         probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilityCashRegisterSetting.Value;
                         break;
+                    case "hairdryer":
+                        probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilityHairDryerSetting.Value;
+                        break;
                     default:
                         break;
                 }

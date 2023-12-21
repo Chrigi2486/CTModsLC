@@ -11,6 +11,7 @@ using UnityEngine;
 using Unity.Netcode;
 using System.Collections;
 using System.Security.Cryptography;
+using System.ComponentModel;
 
 namespace KarmaForBeingAnnoying.Patches
 {
@@ -31,21 +32,34 @@ namespace KarmaForBeingAnnoying.Patches
         [HarmonyPostfix]
         static void NoiseMakerPropItemActivatePatch(ref PlayerControllerB ___playerHeldBy, ref NoisemakerProp __instance)
         {
-            logger.LogInfo("NoiseMakerPropItemActivatePacth ACTIVATED BRUHHHHH");
+            logger.LogInfo("NoiseMakerPropItemActivatePacth ACTIVATED BRUHHHHH: " + __instance.name);
 
             NetworkBehaviour baseplayer = (NetworkBehaviour)___playerHeldBy;
-
-            if (((KarmaForBeingAnnoyingModBase.AnnoyingItemSetting.Value && baseplayer.IsOwner && ___playerHeldBy.isPlayerControlled && (!baseplayer.IsServer || ___playerHeldBy.isHostPlayerObject)) || ___playerHeldBy.isTestingPlayer) && UnityEngine.Random.value < KarmaForBeingAnnoyingModBase.ProbabilitySetting.Value)
+            if(((KarmaForBeingAnnoyingModBase.AnnoyingItemSetting.Value && baseplayer.IsOwner && ___playerHeldBy.isPlayerControlled && (!baseplayer.IsServer || ___playerHeldBy.isHostPlayerObject)) || ___playerHeldBy.isTestingPlayer))
             {
-                __instance.StartCoroutine(DelayedExplosion(baseplayer.transform.position, true, KarmaForBeingAnnoyingModBase.KillRangeSetting.Value, KarmaForBeingAnnoyingModBase.DamageRangeSetting.Value, KarmaForBeingAnnoyingModBase.DelaySetting.Value));
-                logger.LogInfo("Karma");
+                float probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilitySetting.Value;
+                string itemname = __instance.name.Replace("(Clone)","").ToLower();
+                switch (itemname)
+                {
+                    case "airhorn":
+                        probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilityAirhornSetting.Value;
+                        break;
+                    case "clownhorn":
+                        probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilityClownhornSetting.Value;
+                        break;
+                    case "cashregisteritem":
+                        probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilityCashRegisterSetting.Value;
+                        break;
+                    default:
+                        break;
+                }
+                if (UnityEngine.Random.value < probabilityvar)
+                {
+                    __instance.StartCoroutine(DelayedExplosion(baseplayer.transform.position, true, KarmaForBeingAnnoyingModBase.KillRangeSetting.Value, KarmaForBeingAnnoyingModBase.DamageRangeSetting.Value, KarmaForBeingAnnoyingModBase.DelaySetting.Value));
+                    logger.LogInfo("Karma");
+                }
+                
             }
-            /*else
-            {
-                Landmine.SpawnExplosion(baseplayer.transform.position, true, 0f, 0f);
-            }*/
-            
-
 
         }
 

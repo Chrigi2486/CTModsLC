@@ -26,6 +26,9 @@ namespace KarmaForBeingAnnoying
         internal static ConfigEntry<bool> AnnoyingItemSetting;
         internal static ConfigEntry<float> ProbabilitySetting;
         internal static ConfigEntry<float> ProbabilityRemoteSetting;
+        internal static ConfigEntry<float> ProbabilityAirhornSetting;
+        internal static ConfigEntry<float> ProbabilityClownhornSetting;
+        internal static ConfigEntry<float> ProbabilityCashRegisterSetting;
         internal static ConfigEntry<float> DelaySetting;
         internal static ConfigEntry<float> KillRangeSetting;
         internal static ConfigEntry<float> DamageRangeSetting;
@@ -57,6 +60,9 @@ namespace KarmaForBeingAnnoying
             AnnoyingItemSetting = Instance.Config.Bind<bool>("KarmaForBeingAnnoying Settings", "ON OFF switch", true, "Turns functionality on or off");
             ProbabilitySetting = Instance.Config.Bind<float>("Probability Settings", "General Probability", 0.1f, "Set probability of exploding");
             ProbabilityRemoteSetting = Instance.Config.Bind<float>("Probability Settings", "Remote Probability", 0.1f, "Set probability of exploding when using Remote");
+            ProbabilityAirhornSetting = Instance.Config.Bind<float>("Probability Settings", "Airhorn Probability", 0.1f, "Set probability of exploding when using Airhorn");
+            ProbabilityClownhornSetting = Instance.Config.Bind<float>("Probability Settings", "Clownhorn Probability", 0.1f, "Set probability of exploding when using Clownhorn");
+            ProbabilityCashRegisterSetting = Instance.Config.Bind<float>("Probability Settings", "Cashregister Probability", 0.1f, "Set probability of exploding when using Cashregister");
             DelaySetting = Instance.Config.Bind<float>("Delay Settings", "General Delay", 0.5f, "Set delay of explosion");
             KillRangeSetting = Instance.Config.Bind<float>("Kill Range Settings", "General Kill Range", 10f, "Set kill range of explosion");
             DamageRangeSetting = Instance.Config.Bind<float>("Damage Range Settings", "General Damage Range", 1f, "Set damage range of explosion");

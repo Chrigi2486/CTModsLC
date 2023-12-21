@@ -35,7 +35,7 @@ namespace KarmaForBeingAnnoying.Patches
 
             NetworkBehaviour baseplayer = (NetworkBehaviour)___playerHeldBy;
 
-            if (((baseplayer.IsOwner && ___playerHeldBy.isPlayerControlled && (!baseplayer.IsServer || ___playerHeldBy.isHostPlayerObject)) || ___playerHeldBy.isTestingPlayer) && UnityEngine.Random.value < 0.1f)
+            if (((KarmaForBeingAnnoyingModBase.AnnoyingItemSetting.Value && baseplayer.IsOwner && ___playerHeldBy.isPlayerControlled && (!baseplayer.IsServer || ___playerHeldBy.isHostPlayerObject)) || ___playerHeldBy.isTestingPlayer) && UnityEngine.Random.value < KarmaForBeingAnnoyingModBase.ProbabilitySetting.Value)
             {
                 __instance.StartCoroutine(DelayedExplosion(baseplayer.transform.position, true, 10f, 1f, 0.5f));
                 logger.LogInfo("Karma");

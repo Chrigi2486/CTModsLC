@@ -22,6 +22,20 @@ namespace GoOutWithABang.Patches
         private static bool server = false;
         private static bool kys = false;
         private static int mine = 0;
+        private static bool suff;
+        private static bool blast;
+        private static bool unknown;
+        private static bool strang;
+        private static bool maul;
+        private static bool bludg;
+        private static bool grav;
+        private static bool gun;
+        private static bool crush;
+        private static bool drown;
+        private static bool aban;
+        private static bool electro;
+        private static bool kick;
+        
 
         [HarmonyPatch(typeof(RoundManager), "LoadNewLevel")]
         [HarmonyPrefix]
@@ -36,6 +50,19 @@ namespace GoOutWithABang.Patches
                 server = true;
             }
             ded = false;
+            suff = GoOutWithABangModBase.SuffocationSetting.Value;
+            blast = GoOutWithABangModBase.BlastSetting.Value;
+            unknown = GoOutWithABangModBase.UnknownSetting.Value;
+            strang = GoOutWithABangModBase.StrangulationSetting.Value;
+            maul = GoOutWithABangModBase.MaulingSetting.Value;
+            bludg = GoOutWithABangModBase.BludgeoningSetting.Value;
+            grav = GoOutWithABangModBase.GravitySetting.Value;
+            gun = GoOutWithABangModBase.GunshotsSetting.Value;
+            crush = GoOutWithABangModBase.CrushingSetting.Value;
+            drown = GoOutWithABangModBase.DrowningSetting.Value;
+            aban = GoOutWithABangModBase.AbandonedSetting.Value;
+            electro = GoOutWithABangModBase.ElectrocutionSetting.Value;
+            kick = GoOutWithABangModBase.KickingSetting.Value;
 
         }
 
@@ -43,6 +70,7 @@ namespace GoOutWithABang.Patches
         [HarmonyPostfix]
         static void FinishGeneratingNewLevelClientRpcPatch()
         {
+
             logger.LogInfo("Level Loaded, any new mine spawned will blow up instantly");
             kys = true;
             int len = currentRound.currentLevel.spawnableMapObjects.Count();
@@ -55,6 +83,7 @@ namespace GoOutWithABang.Patches
                     break;
                 }
             }
+
         }
 
         [HarmonyPatch(typeof(Landmine), "Start")]
@@ -77,8 +106,13 @@ namespace GoOutWithABang.Patches
         static void PlayerControllerBPatch(PlayerControllerB __instance)
         {
             NetworkBehaviour baseplayer = (NetworkBehaviour)__instance;
-            if (server && __instance.isPlayerDead && (!baseplayer.IsOwnedByServer || !ded) && __instance.causeOfDeath != CauseOfDeath.Blast && __instance.causeOfDeath != CauseOfDeath.Unknown) // && __instance.causeOfDeath != CauseOfDeath.Suffocation  && __instance.causeOfDeath != CauseOfDeath.Strangulation)
+            
+            if (server && __instance.isPlayerDead && (!baseplayer.IsOwnedByServer || !ded)) // && __instance.causeOfDeath != CauseOfDeath.Suffocation  && __instance.causeOfDeath != CauseOfDeath.Strangulation)
             {
+                if(__instance.causeOfDeath == CauseOfDeath.Suffocation && !suff || __instance.causeOfDeath == CauseOfDeath.Mauling && !maul || __instance.causeOfDeath == CauseOfDeath.Bludgeoning && !bludg || __instance.causeOfDeath == CauseOfDeath.Gravity && !grav || __instance.causeOfDeath == CauseOfDeath.Gunshots && !gun || __instance.causeOfDeath == CauseOfDeath.Crushing && !crush || __instance.causeOfDeath == CauseOfDeath.Drowning && !drown || __instance.causeOfDeath == CauseOfDeath.Abandoned && !aban || __instance.causeOfDeath == CauseOfDeath.Electrocution && !electro || __instance.causeOfDeath == CauseOfDeath.Kicking && !kick || __instance.causeOfDeath == CauseOfDeath.Strangulation && !strang || __instance.causeOfDeath == CauseOfDeath.Unknown && !unknown || __instance.causeOfDeath == CauseOfDeath.Blast && !blast)
+                {
+                    return;
+                }
                 if (baseplayer.IsOwnedByServer)
                 {
                     ded = true;

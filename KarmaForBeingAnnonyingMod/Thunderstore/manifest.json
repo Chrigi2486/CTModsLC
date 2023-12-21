@@ -1,0 +1,9 @@
+{
+    "name": "KarmaForBeingAnnoying",
+    "description": "Adds a 10% chance of exploding if you use annoying Items like the Airhorn, Clownhorn or Remote. Now customizable!",
+    "version_number": "1.1.0",
+    "website_url": "https://github.com/Chrigi2486/CTModsLC",
+    "dependencies": ["BepInEx-BepInExPack-5.4.2100"
+
+    ]
+}

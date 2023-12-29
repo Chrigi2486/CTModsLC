@@ -1,3 +1,6 @@
+## v1.1.2 Added ChatCommands
+- added out Chatcommands
+
 ## v1.1.1 forgot morecompany
 - added it
 

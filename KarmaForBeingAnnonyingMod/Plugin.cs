@@ -70,7 +70,7 @@ namespace KarmaForBeingAnnoying
             KillRangeSetting = Instance.Config.Bind<float>("Kill Range Settings", "General Kill Range", 10f, "Set kill range of explosion");
             DamageRangeSetting = Instance.Config.Bind<float>("Damage Range Settings", "General Damage Range", 1f, "Set damage range of explosion");
             RemoteSetting = Instance.Config.Bind<bool>("KarmaForBeingAnnoying Settings", "UseOnRemote", true, "Defines if Remote sets off explosion based on params");
-            SpawnmineSetting = Instance.Config.Bind<bool>("KarmaForBeingAnnoying Settings", "SpawnMine", true, "Defines if a mine gets spawned (only works for server host)");
+            SpawnmineSetting = Instance.Config.Bind<bool>("KarmaForBeingAnnoying Settings", "SpawnMine", false, "Defines if a mine gets spawned (only works for server host)");
         } 
     }
 }

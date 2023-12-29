@@ -1,9 +1,32 @@
 {
     "name": "CTModsPack",
-    "description": "Pack for all our Mods",
-    "version_number": "1.0.0",
+    "description": "Pack for all our Mods and some cool ones for the boyss",
+    "version_number": "1.1.1",
     "website_url": "https://github.com/Chrigi2486/CTModsLC/",
-    "dependencies": ["BepInEx-BepInExPack-5.4.2100", "CTMods-GoOutWithABang-1.0.0","CTMods-KarmaForBeingAnnoying-1.1.0","CTMods-ToemmsensCursedSoundMod-1.0.4"
+    "dependencies": ["BepInEx-BepInExPack-5.4.2100", 
+    "CTMods-GoOutWithABang-1.0.0",
+    "CTMods-KarmaForBeingAnnoying-1.1.0",
+    "CTMods-ToemmsensCursedSoundMod-1.0.4",
+    "Suskitech-AlwaysHearActiveWalkies-1.4.3",
+    "an0nymooose-An0n_Patches-1.0.3",
+    "Renegades-FlashlightToggle-1.5.0",
+    "Rune580-LethalCompany_InputUtils-0.4.4",
+    "Sligili-HDLethalCompany-1.5.6",
+    "RickArg-Helmet_Cameras-2.1.5",
+    "anormaltwig-LateCompany-1.0.7",
+    "2018-LC_API-3.1.0",
+    "FlipMods-LetMeLookDown-1.0.1",
+    "Sligili-More_Emotes-1.2.2",
+    "x753-More_Suits-1.4.1",
+    "tinyhoot-ShipLoot-1.0.0",
+    "RugbugRedfern-Skinwalkers-2.0.1",
+    "FlipMods-SkipToMultiplayerMenu-1.0.0",
+    "AllToasters-SpectateEnemies-2.0.0",
+    "Hexnet111-SuitSaver-1.1.2",
+    "sunnobunno-YippeeMod-1.2.2",
+    "steven4547466-YoutubeBoombox-1.5.0",
+    "notnotnotswipez-MoreCompany-1.7.2"
+
 
     ]
 }

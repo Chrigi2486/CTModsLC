@@ -1,3 +1,8 @@
+## v1.1.3 Updates
+- updated some mods to use most recent dependecies
+- removed YT boombox, bc depreceated
+- added rafls YtDlpBoombox and dependencies
+
 ## v1.1.2 Added ChatCommands
 - added out Chatcommands
 

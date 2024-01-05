@@ -24,6 +24,7 @@ namespace KarmaForBeingAnnoying
         private static KarmaForBeingAnnoyingModBase Instance;
 
         internal static ConfigEntry<bool> AnnoyingItemSetting;
+        internal static ConfigEntry<bool> ServerSetting;
         internal static ConfigEntry<float> ProbabilitySetting;
         internal static ConfigEntry<float> ProbabilityRemoteSetting;
         internal static ConfigEntry<float> ProbabilityAirhornSetting;
@@ -48,7 +49,7 @@ namespace KarmaForBeingAnnoying
             mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
 
 
-            mls.LogInfo("________________\nKarma is a bitch!\n________________");
+            mls.LogInfo("Karma for being annoying enabled!");
             SetCFG();
 
             harmony.PatchAll(typeof(NoisemakerPropPatch));
@@ -60,6 +61,7 @@ namespace KarmaForBeingAnnoying
         private static void SetCFG()
         {
             AnnoyingItemSetting = Instance.Config.Bind<bool>("KarmaForBeingAnnoying Settings", "ON OFF switch", true, "Turns functionality on or off");
+            ServerSetting = Instance.Config.Bind<bool>("KarmaForBeingAnnoying Settings", "Kill as Server", true, "Define if you as the Server Host kill everyone who uses it (needs to be on for joining players not needing mod)");
             ProbabilitySetting = Instance.Config.Bind<float>("Probability Settings", "General Probability", 0.1f, "Set probability of exploding");
             ProbabilityRemoteSetting = Instance.Config.Bind<float>("Probability Settings", "Remote Probability", 0.1f, "Set probability of exploding when using Remote");
             ProbabilityAirhornSetting = Instance.Config.Bind<float>("Probability Settings", "Airhorn Probability", 0.1f, "Set probability of exploding when using Airhorn");
@@ -71,6 +73,7 @@ namespace KarmaForBeingAnnoying
             DamageRangeSetting = Instance.Config.Bind<float>("Damage Range Settings", "General Damage Range", 1f, "Set damage range of explosion");
             RemoteSetting = Instance.Config.Bind<bool>("KarmaForBeingAnnoying Settings", "UseOnRemote", true, "Defines if Remote sets off explosion based on params");
             SpawnmineSetting = Instance.Config.Bind<bool>("KarmaForBeingAnnoying Settings", "SpawnMine", false, "Defines if a mine gets spawned (only works for server host)");
+            
         } 
     }
 }

@@ -8,10 +8,12 @@ using BepInEx;
 using BepInEx.Logging;
 using GameNetcodeStuff;
 using UnityEngine;
+using UnityEngine.Audio;
 using Unity.Netcode;
 using System.Collections;
 using System.Security.Cryptography;
 using System.ComponentModel;
+using DigitalRuby.ThunderAndLightning;
 
 namespace KarmaForBeingAnnoying.Patches
 {
@@ -20,7 +22,8 @@ namespace KarmaForBeingAnnoying.Patches
 
         private static ManualLogSource logger = KarmaForBeingAnnoyingModBase.mls;
         private static bool spawnmine = KarmaForBeingAnnoyingModBase.SpawnmineSetting.Value;
-
+        private static List<NoisemakerProp> noisemakers = new List<NoisemakerProp>();
+        private static List<GrabbableObject> remotes = new List<GrabbableObject>();
         private static bool ded;
         private static RoundManager currentRound;
         private static bool server = false;
@@ -35,18 +38,113 @@ namespace KarmaForBeingAnnoying.Patches
             logger.LogInfo("Boom");
         }
 
-        [HarmonyPatch(typeof(NoisemakerProp), "ItemActivate")]
-        [HarmonyPostfix]
-        static void NoiseMakerPropItemActivatePatch(ref PlayerControllerB ___playerHeldBy, ref NoisemakerProp __instance)
-        {
-            logger.LogInfo("NoiseMakerPropItemActivatePacth ACTIVATED BRUHHHHH: " + __instance.name);
-            NetworkBehaviour baseplayer = (NetworkBehaviour)___playerHeldBy;
-            
+        //[HarmonyPatch(typeof(NoisemakerProp), "ItemActivate")]
+        //[HarmonyPostfix]
+        //static void NoiseMakerPropItemActivatePatch(ref PlayerControllerB ___playerHeldBy, ref NoisemakerProp __instance)
+        //{
+        //    logger.LogInfo("NoiseMakerPropItemActivatePatch ACTIVATED BRUHHHHH: " + __instance.name);
+        //    NetworkBehaviour baseplayer = (NetworkBehaviour)___playerHeldBy;
+        //    Vector3 itemposition = __instance.transform.position;
+        //
+        //    if(((KarmaForBeingAnnoyingModBase.AnnoyingItemSetting.Value && baseplayer.IsOwner && ___playerHeldBy.isPlayerControlled && (!baseplayer.IsServer || ___playerHeldBy.isHostPlayerObject)) || ___playerHeldBy.isTestingPlayer))
+        //    {
+        //        float probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilitySetting.Value;
+        //        string itemname = __instance.name.Replace("(Clone)","").ToLower();
+        //        switch (itemname)
+        //        {
+        //            case "airhorn":
+        //                probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilityAirhornSetting.Value;
+        //                break;
+        //            case "clownhorn":
+        //                probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilityClownhornSetting.Value;
+        //                break;
+        //            case "cashregisteritem":
+        //                probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilityCashRegisterSetting.Value;
+        //                break;
+        //            case "hairdryer":
+        //                probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilityHairDryerSetting.Value;
+        //                break;
+        //            default:
+        //                break;
+        //        }
+        //        if (UnityEngine.Random.value < probabilityvar)
+        //        {
+        //            if (server && spawnmine)
+        //            {
+        //                GameObject gameObject = UnityEngine.Object.Instantiate(currentRound.currentLevel.spawnableMapObjects[mine].prefabToSpawn, ___playerHeldBy.transform.position, Quaternion.identity, currentRound.mapPropsContainer.transform);
+        //                gameObject.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
+        //                logger.LogInfo("Mine Spawned, Karma!");
+        //                return;
+        //            } 
+        //            else if (server)
+        //            {
+        //                logger.LogInfo("Server, but no mine");
+        //                ___playerHeldBy.KillPlayer(Vector3.up,true,CauseOfDeath.Unknown,0);
+        //            }
+        //            __instance.StartCoroutine(DelayedExplosion(baseplayer.transform.position, true, KarmaForBeingAnnoyingModBase.KillRangeSetting.Value, KarmaForBeingAnnoyingModBase.DamageRangeSetting.Value, KarmaForBeingAnnoyingModBase.DelaySetting.Value));
+        //            logger.LogInfo("Karma");
+        //        }
+        //        
+        //    }
+        //
+        //}
 
-            if(((KarmaForBeingAnnoyingModBase.AnnoyingItemSetting.Value && baseplayer.IsOwner && ___playerHeldBy.isPlayerControlled && (!baseplayer.IsServer || ___playerHeldBy.isHostPlayerObject)) || ___playerHeldBy.isTestingPlayer))
+        //[HarmonyPatch(typeof(RemoteProp), "ItemActivate")]
+        //[HarmonyPostfix]
+        //static void RemotePropPatch(ref PlayerControllerB ___playerHeldBy, ref RemoteProp __instance)
+        //{
+        //    logger.LogInfo("RemotePropPatch ACTIVATED BRUHHHHH");
+        //
+        //    NetworkBehaviour baseplayer = (NetworkBehaviour)__instance;
+        //
+        //    if (((KarmaForBeingAnnoyingModBase.RemoteSetting.Value && baseplayer.IsOwner && ___playerHeldBy.isPlayerControlled && (!baseplayer.IsServer || ___playerHeldBy.isHostPlayerObject)) || ___playerHeldBy.isTestingPlayer) && UnityEngine.Random.value < KarmaForBeingAnnoyingModBase.ProbabilityRemoteSetting.Value)
+        //    {
+        //        if(server && spawnmine)
+        //        {
+        //            GameObject gameObject = UnityEngine.Object.Instantiate(currentRound.currentLevel.spawnableMapObjects[mine].prefabToSpawn, ___playerHeldBy.transform.position, Quaternion.identity, currentRound.mapPropsContainer.transform);
+        //            gameObject.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
+        //        }
+        //        else if (server)
+        //        {
+        //            logger.LogInfo("Server, but no mine");
+        //            ___playerHeldBy.KillPlayer(Vector3.up, true, CauseOfDeath.Unknown, 0);
+        //        }
+        //        __instance.StartCoroutine(DelayedExplosion(baseplayer.transform.position, true, KarmaForBeingAnnoyingModBase.KillRangeSetting.Value, KarmaForBeingAnnoyingModBase.DamageRangeSetting.Value, KarmaForBeingAnnoyingModBase.DelaySetting.Value));
+        //        logger.LogInfo("Karma");
+        //    }
+        //}
+
+        [HarmonyPatch(typeof(NoisemakerProp), "Start")]
+        [HarmonyPostfix]
+        static void NoiseMakerReference(ref NoisemakerProp __instance)
+        {
+            noisemakers.Add(__instance);
+            logger.LogInfo("NoiseMakerReference found: " + __instance.name);
+
+        }
+
+        [HarmonyPatch(typeof(GrabbableObject), "Start")]
+        [HarmonyPostfix]
+        static void RemoteReference(ref GrabbableObject __instance)
+        {
+            if (__instance.name.Contains("Remote"))
+            remotes.Add(__instance);
+            logger.LogInfo("RemoteReference found: " + __instance.name);
+
+        }
+
+        [HarmonyPatch(typeof(RoundManager), "PlayAudibleNoise")]
+        [HarmonyPostfix]
+        static void SoundManagerPatch(ref Vector3 noisePosition, ref int noiseID)
+        {
+            logger.LogInfo("Played Sound " + noiseID +" at position:" + noisePosition);
+            bool timetodie = false;
+            PlayerControllerB player = null;
+            foreach(NoisemakerProp noisemaker in noisemakers)
             {
+                string itemname = noisemaker.name.Replace("(Clone)", "").ToLower();
+                logger.LogInfo("Noisemaker: "+ itemname + " isBeingUsed: "+ noisemaker.isBeingUsed + " isBeingHeld: " + noisemaker.isHeld);
                 float probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilitySetting.Value;
-                string itemname = __instance.name.Replace("(Clone)","").ToLower();
                 switch (itemname)
                 {
                     case "airhorn":
@@ -64,49 +162,46 @@ namespace KarmaForBeingAnnoying.Patches
                     default:
                         break;
                 }
-                if (UnityEngine.Random.value < probabilityvar)
+                if (noisemaker.isBeingUsed && noisemaker.isHeld && UnityEngine.Random.value < probabilityvar)
                 {
-                    if (server && spawnmine)
-                    {
-                        GameObject gameObject = UnityEngine.Object.Instantiate(currentRound.currentLevel.spawnableMapObjects[mine].prefabToSpawn, ___playerHeldBy.transform.position, Quaternion.identity, currentRound.mapPropsContainer.transform);
-                        gameObject.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
-                        logger.LogInfo("Mine Spawned, Karma!");
-                        return;
-                    }
-                    __instance.StartCoroutine(DelayedExplosion(baseplayer.transform.position, true, KarmaForBeingAnnoyingModBase.KillRangeSetting.Value, KarmaForBeingAnnoyingModBase.DamageRangeSetting.Value, KarmaForBeingAnnoyingModBase.DelaySetting.Value));
-                    logger.LogInfo("Karma");
+                    player = noisemaker.playerHeldBy;
+                    timetodie = true;
+                    logger.LogInfo("Noisemaker: " + noisemaker.name + " Used by Player: " + player.playerUsername + " , adding some Karma :)");
                 }
-                
             }
 
-        }
-
-        [HarmonyPatch(typeof(RemoteProp), "ItemActivate")]
-        [HarmonyPostfix]
-        static void RemotePropPatch(ref PlayerControllerB ___playerHeldBy, ref RemoteProp __instance)
-        {
-            logger.LogInfo("RemotePropPatch ACTIVATED BRUHHHHH");
-
-            NetworkBehaviour baseplayer = (NetworkBehaviour)__instance;
-
-            if (((KarmaForBeingAnnoyingModBase.RemoteSetting.Value && baseplayer.IsOwner && ___playerHeldBy.isPlayerControlled && (!baseplayer.IsServer || ___playerHeldBy.isHostPlayerObject)) || ___playerHeldBy.isTestingPlayer) && UnityEngine.Random.value < KarmaForBeingAnnoyingModBase.ProbabilityRemoteSetting.Value)
+            foreach(GrabbableObject remote in remotes)
             {
-                if(server && spawnmine)
+                logger.LogInfo("Remote: " + remote.name + " isBeingUsed: " + remote.isBeingUsed + " isBeingHeld: " + remote.isHeld);
+                if (remote.isBeingUsed && remote.isHeld && UnityEngine.Random.value < KarmaForBeingAnnoyingModBase.ProbabilityRemoteSetting.Value)
                 {
-                    GameObject gameObject = UnityEngine.Object.Instantiate(currentRound.currentLevel.spawnableMapObjects[mine].prefabToSpawn, ___playerHeldBy.transform.position, Quaternion.identity, currentRound.mapPropsContainer.transform);
-                    gameObject.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
+                    player = remote.playerHeldBy;
+                    timetodie = true;
+                    logger.LogInfo("Remote used by Player: " + player.playerUsername + " , adding some Karma :)");
                 }
-                __instance.StartCoroutine(DelayedExplosion(baseplayer.transform.position, true, KarmaForBeingAnnoyingModBase.KillRangeSetting.Value, KarmaForBeingAnnoyingModBase.DamageRangeSetting.Value, KarmaForBeingAnnoyingModBase.DelaySetting.Value));
-                logger.LogInfo("Karma");
+            }
+            if (timetodie && player != null)
+            {
+                if (server && spawnmine)
+                {
+                    GameObject gameObject = UnityEngine.Object.Instantiate(currentRound.currentLevel.spawnableMapObjects[mine].prefabToSpawn, player.transform.position, Quaternion.identity, currentRound.mapPropsContainer.transform);
+                    gameObject.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
+                    logger.LogInfo("Mine Spawned, Karma!");
+                    return;
+                }
+                else
+                {
+                    player.KillPlayer(Vector3.up * 124f, true, CauseOfDeath.Unknown, 0);
+                }
             }
         }
-
         
 
         [HarmonyPatch(typeof(RoundManager), "LoadNewLevel")]
         [HarmonyPrefix]
         static void LoadNewLevelPatch()
         {
+            currentRound = RoundManager.Instance;
             if (spawnmine)
             {
                 server = false;
@@ -120,6 +215,11 @@ namespace KarmaForBeingAnnoying.Patches
                 ded = false;
             }
             
+            else if (currentRound.IsServer)
+            {
+                server = true;
+            }
+
         }
 
         [HarmonyPatch(typeof(RoundManager), "FinishGeneratingNewLevelClientRpc")]

@@ -23,7 +23,6 @@ namespace GoOutWithABang
 
 
         private static GoOutWithABangModBase Instance;
-        internal static ConfigEntry<bool> RegularMines;
         internal static ConfigEntry<bool> SuffocationSetting;
         internal static ConfigEntry<bool> BlastSetting;
         internal static ConfigEntry<bool> UnknownSetting;
@@ -70,7 +69,6 @@ namespace GoOutWithABang
             AbandonedSetting = Config.Bind("Settings", "Abandoned", true, "Enable Explosion on Abandoned");
             ElectrocutionSetting = Config.Bind("Settings", "Electrocution", true, "Enable Explosion on Electrocution");
             KickingSetting = Config.Bind("Settings", "Kicking", true, "Enable Explosion on Kicking");
-            RegularMines = Config.Bind("Settings", "RegularMines", true, "Toggle spawning of regular mines in the level");
 
 
 

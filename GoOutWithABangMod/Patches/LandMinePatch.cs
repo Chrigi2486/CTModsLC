@@ -21,6 +21,7 @@ namespace GoOutWithABang.Patches
         private static RoundManager currentRound;
         private static bool server = false;
         private static bool isLevelLoaded = false;
+        private static bool deathMineSpawned = false;
         private static int mine = 0;
         private static bool suff;
         private static bool blast;
@@ -35,7 +36,6 @@ namespace GoOutWithABang.Patches
         private static bool aban;
         private static bool electro;
         private static bool kick;
-        private static bool regularMinesEnabled;
 
 
         [HarmonyPatch(typeof(RoundManager), "LoadNewLevel")]
@@ -64,7 +64,6 @@ namespace GoOutWithABang.Patches
             aban = GoOutWithABangModBase.AbandonedSetting.Value;
             electro = GoOutWithABangModBase.ElectrocutionSetting.Value;
             kick = GoOutWithABangModBase.KickingSetting.Value;
-            regularMinesEnabled = GoOutWithABangModBase.RegularMines.Value;
 
         }
 
@@ -73,18 +72,15 @@ namespace GoOutWithABang.Patches
         static void FinishGeneratingNewLevelClientRpcPatch()
         {
             isLevelLoaded = true;
-            if (!regularMinesEnabled)
+            logger.LogInfo("Level Loaded, any new mine spawned will blow up instantly");
+            int len = currentRound.currentLevel.spawnableMapObjects.Count();
+            for (int i = 0; i < len; i++)
             {
-                logger.LogInfo("Level Loaded, any new mine spawned will blow up instantly");
-                int len = currentRound.currentLevel.spawnableMapObjects.Count();
-                for (int i = 0; i < len; i++)
+                if (currentRound.currentLevel.spawnableMapObjects[i].prefabToSpawn.name == "Landmine")
                 {
-                    if (currentRound.currentLevel.spawnableMapObjects[i].prefabToSpawn.name == "Landmine")
-                    {
-                        logger.LogInfo("Found Mine Index: " + i);
-                        mine = i;
-                        break;
-                    }
+                    logger.LogInfo("Found Mine Index: " + i);
+                    mine = i;
+                    break;
                 }
             }
 
@@ -97,10 +93,11 @@ namespace GoOutWithABang.Patches
         {
             logger.LogInfo("Landmine Spawned");
 
-            if (!regularMinesEnabled && isLevelLoaded)
+            if (isLevelLoaded && deathMineSpawned)
             {
                 logger.LogInfo("Forcing mine explosion");
                 __instance.ExplodeMineServerRpc();
+                deathMineSpawned = false;
                 logger.LogInfo("Mine forcefully activated");
             }
         }
@@ -123,6 +120,7 @@ namespace GoOutWithABang.Patches
                     ded = true;
                 }
                 logger.LogInfo("Spawning mine on dead player");
+                deathMineSpawned = true;
                 GameObject gameObject = UnityEngine.Object.Instantiate(currentRound.currentLevel.spawnableMapObjects[mine].prefabToSpawn, __instance.placeOfDeath, Quaternion.identity, currentRound.mapPropsContainer.transform);
                 gameObject.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
 

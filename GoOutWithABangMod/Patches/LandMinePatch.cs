@@ -20,7 +20,7 @@ namespace GoOutWithABang.Patches
         private static bool ded;
         private static RoundManager currentRound;
         private static bool server = false;
-        private static bool kys = false;
+        private static bool isLevelLoaded = false;
         private static int mine = 0;
         private static bool suff;
         private static bool blast;
@@ -35,14 +35,15 @@ namespace GoOutWithABang.Patches
         private static bool aban;
         private static bool electro;
         private static bool kick;
-        
+        private static bool regularMinesEnabled;
+
 
         [HarmonyPatch(typeof(RoundManager), "LoadNewLevel")]
         [HarmonyPrefix]
         static void LoadNewLevelPatch()
         {
             server = false;
-            kys = false;
+            isLevelLoaded = false;
 
             currentRound = RoundManager.Instance;
             if (currentRound.IsServer)
@@ -63,6 +64,7 @@ namespace GoOutWithABang.Patches
             aban = GoOutWithABangModBase.AbandonedSetting.Value;
             electro = GoOutWithABangModBase.ElectrocutionSetting.Value;
             kick = GoOutWithABangModBase.KickingSetting.Value;
+            regularMinesEnabled = GoOutWithABangModBase.RegularMines.Value;
 
         }
 
@@ -70,19 +72,22 @@ namespace GoOutWithABang.Patches
         [HarmonyPostfix]
         static void FinishGeneratingNewLevelClientRpcPatch()
         {
-
-            logger.LogInfo("Level Loaded, any new mine spawned will blow up instantly");
-            kys = true;
-            int len = currentRound.currentLevel.spawnableMapObjects.Count();
-            for (int i = 0; i < len; i++)
+            isLevelLoaded = true;
+            if (!regularMinesEnabled)
             {
-                if (currentRound.currentLevel.spawnableMapObjects[i].prefabToSpawn.name == "Landmine")
+                logger.LogInfo("Level Loaded, any new mine spawned will blow up instantly");
+                int len = currentRound.currentLevel.spawnableMapObjects.Count();
+                for (int i = 0; i < len; i++)
                 {
-                    logger.LogInfo("Found Mine Index: " + i);
-                    mine = i;
-                    break;
+                    if (currentRound.currentLevel.spawnableMapObjects[i].prefabToSpawn.name == "Landmine")
+                    {
+                        logger.LogInfo("Found Mine Index: " + i);
+                        mine = i;
+                        break;
+                    }
                 }
             }
+
 
         }
 
@@ -92,7 +97,7 @@ namespace GoOutWithABang.Patches
         {
             logger.LogInfo("Landmine Spawned");
 
-            if (kys)
+            if (!regularMinesEnabled && isLevelLoaded)
             {
                 logger.LogInfo("Forcing mine explosion");
                 __instance.ExplodeMineServerRpc();
@@ -106,10 +111,10 @@ namespace GoOutWithABang.Patches
         static void PlayerControllerBPatch(PlayerControllerB __instance)
         {
             NetworkBehaviour baseplayer = (NetworkBehaviour)__instance;
-            
+
             if (server && __instance.isPlayerDead && (!baseplayer.IsOwnedByServer || !ded)) // && __instance.causeOfDeath != CauseOfDeath.Suffocation  && __instance.causeOfDeath != CauseOfDeath.Strangulation)
             {
-                if(__instance.causeOfDeath == CauseOfDeath.Suffocation && !suff || __instance.causeOfDeath == CauseOfDeath.Mauling && !maul || __instance.causeOfDeath == CauseOfDeath.Bludgeoning && !bludg || __instance.causeOfDeath == CauseOfDeath.Gravity && !grav || __instance.causeOfDeath == CauseOfDeath.Gunshots && !gun || __instance.causeOfDeath == CauseOfDeath.Crushing && !crush || __instance.causeOfDeath == CauseOfDeath.Drowning && !drown || __instance.causeOfDeath == CauseOfDeath.Abandoned && !aban || __instance.causeOfDeath == CauseOfDeath.Electrocution && !electro || __instance.causeOfDeath == CauseOfDeath.Kicking && !kick || __instance.causeOfDeath == CauseOfDeath.Strangulation && !strang || __instance.causeOfDeath == CauseOfDeath.Unknown && !unknown || __instance.causeOfDeath == CauseOfDeath.Blast && !blast)
+                if (__instance.causeOfDeath == CauseOfDeath.Suffocation && !suff || __instance.causeOfDeath == CauseOfDeath.Mauling && !maul || __instance.causeOfDeath == CauseOfDeath.Bludgeoning && !bludg || __instance.causeOfDeath == CauseOfDeath.Gravity && !grav || __instance.causeOfDeath == CauseOfDeath.Gunshots && !gun || __instance.causeOfDeath == CauseOfDeath.Crushing && !crush || __instance.causeOfDeath == CauseOfDeath.Drowning && !drown || __instance.causeOfDeath == CauseOfDeath.Abandoned && !aban || __instance.causeOfDeath == CauseOfDeath.Electrocution && !electro || __instance.causeOfDeath == CauseOfDeath.Kicking && !kick || __instance.causeOfDeath == CauseOfDeath.Strangulation && !strang || __instance.causeOfDeath == CauseOfDeath.Unknown && !unknown || __instance.causeOfDeath == CauseOfDeath.Blast && !blast)
                 {
                     return;
                 }
@@ -120,7 +125,7 @@ namespace GoOutWithABang.Patches
                 logger.LogInfo("Spawning mine on dead player");
                 GameObject gameObject = UnityEngine.Object.Instantiate(currentRound.currentLevel.spawnableMapObjects[mine].prefabToSpawn, __instance.placeOfDeath, Quaternion.identity, currentRound.mapPropsContainer.transform);
                 gameObject.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
-                
+
 
             }
 

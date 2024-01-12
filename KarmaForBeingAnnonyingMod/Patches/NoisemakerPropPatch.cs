@@ -140,46 +140,77 @@ namespace KarmaForBeingAnnoying.Patches
             logger.LogInfo("Played Sound " + noiseID +" at position:" + noisePosition);
             bool timetodie = false;
             PlayerControllerB player = null;
-            foreach(NoisemakerProp noisemaker in noisemakers)
+            if (noisemakers.Count() > 0)
             {
-                string itemname = noisemaker.name.Replace("(Clone)", "").ToLower();
-                logger.LogInfo("Noisemaker: "+ itemname + " isBeingUsed: "+ noisemaker.isBeingUsed + " isBeingHeld: " + noisemaker.isHeld);
-                float probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilitySetting.Value;
-                switch (itemname)
+                foreach (NoisemakerProp noisemaker in noisemakers)
                 {
-                    case "airhorn":
-                        probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilityAirhornSetting.Value;
-                        break;
-                    case "clownhorn":
-                        probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilityClownhornSetting.Value;
-                        break;
-                    case "cashregisteritem":
-                        probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilityCashRegisterSetting.Value;
-                        break;
-                    case "hairdryer":
-                        probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilityHairDryerSetting.Value;
-                        break;
-                    default:
-                        break;
+                    string itemname = noisemaker.name.Replace("(Clone)", "").ToLower();
+                    logger.LogInfo("Noisemaker: " + itemname + " isBeingUsed: " + noisemaker.isBeingUsed + " isBeingHeld: " + noisemaker.isHeld);
+                    float probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilitySetting.Value;
+                    switch (itemname)
+                    {
+                        case "airhorn":
+                            probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilityAirhornSetting.Value;
+                            break;
+                        case "clownhorn":
+                            probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilityClownhornSetting.Value;
+                            break;
+                        case "cashregisteritem":
+                            probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilityCashRegisterSetting.Value;
+                            break;
+                        case "hairdryer":
+                            probabilityvar = KarmaForBeingAnnoyingModBase.ProbabilityHairDryerSetting.Value;
+                            break;
+                        default:
+                            break;
+                    }
+                    if (noisemaker.isBeingUsed && noisemaker.isHeld && UnityEngine.Random.value < probabilityvar)
+                    {
+                        //player = noisemaker.playerHeldBy;
+                        float distanceToNoise = float.MaxValue;
+                        PlayerControllerB closestPlayer = null;
+                        PlayerControllerB[] allPlayerScripts = StartOfRound.Instance.allPlayerScripts;
+                        foreach (PlayerControllerB testedPlayer in allPlayerScripts)
+                        {
+                            distanceToNoise = (Vector3.Distance(testedPlayer.transform.position, noisePosition) < distanceToNoise ? Vector3.Distance(testedPlayer.transform.position, noisePosition) : distanceToNoise);
+                            closestPlayer = testedPlayer;
+                        }
+                        player = closestPlayer;
+                        timetodie = true;
+                        logger.LogInfo("Noisemaker: " + noisemaker.name + " Used by Player: " + player.playerUsername + " , adding some Karma :)");
+                    }
                 }
-                if (noisemaker.isBeingUsed && noisemaker.isHeld && UnityEngine.Random.value < probabilityvar)
+            }
+            
+
+            else if (remotes.Count() > 0)
+            {
+                foreach (GrabbableObject remote in remotes)
                 {
-                    player = noisemaker.playerHeldBy;
-                    timetodie = true;
-                    logger.LogInfo("Noisemaker: " + noisemaker.name + " Used by Player: " + player.playerUsername + " , adding some Karma :)");
+                    logger.LogInfo("Remote: " + remote.name + " isBeingUsed: " + remote.isBeingUsed + " isBeingHeld: " + remote.isHeld);
+                    if (remote.isBeingUsed && remote.isHeld && UnityEngine.Random.value < KarmaForBeingAnnoyingModBase.ProbabilityRemoteSetting.Value)
+                    {
+                        float distanceToNoise = float.MaxValue;
+                        PlayerControllerB closestPlayer = null;
+                        PlayerControllerB[] allPlayerScripts = StartOfRound.Instance.allPlayerScripts;
+                        foreach (PlayerControllerB testedPlayer in allPlayerScripts)
+                        {
+                            distanceToNoise = (Vector3.Distance(testedPlayer.transform.position, noisePosition) < distanceToNoise ? Vector3.Distance(testedPlayer.transform.position, noisePosition) : distanceToNoise);
+                            closestPlayer = testedPlayer;
+                        }
+                        player = closestPlayer;
+                        timetodie = true;
+                        logger.LogInfo("Remote used by Player: " + player.playerUsername + " , adding some Karma :)");
+                    }
                 }
+            }
+            else
+            {
+                logger.LogInfo("Noisemaker or Remote not found");
+                return;
             }
 
-            foreach(GrabbableObject remote in remotes)
-            {
-                logger.LogInfo("Remote: " + remote.name + " isBeingUsed: " + remote.isBeingUsed + " isBeingHeld: " + remote.isHeld);
-                if (remote.isBeingUsed && remote.isHeld && UnityEngine.Random.value < KarmaForBeingAnnoyingModBase.ProbabilityRemoteSetting.Value)
-                {
-                    player = remote.playerHeldBy;
-                    timetodie = true;
-                    logger.LogInfo("Remote used by Player: " + player.playerUsername + " , adding some Karma :)");
-                }
-            }
+            
             if (timetodie && player != null)
             {
                 if (server && spawnmine)

@@ -17,7 +17,7 @@ namespace GoOutWithABang
 
         private const string modGUID = "Chrigi.GoOutWithABangMod";
         private const string modName = "Go Out With A Bang Mod";
-        private const string modVersion = "1.0.0";
+        private const string modVersion = "1.0.1";
 
         private readonly Harmony harmony = new Harmony(modGUID);
 
@@ -69,7 +69,7 @@ namespace GoOutWithABang
             AbandonedSetting = Config.Bind("Settings", "Abandoned", true, "Enable Explosion on Abandoned");
             ElectrocutionSetting = Config.Bind("Settings", "Electrocution", true, "Enable Explosion on Electrocution");
             KickingSetting = Config.Bind("Settings", "Kicking", true, "Enable Explosion on Kicking");
-            
+
 
 
             harmony.PatchAll(typeof(LandMinePatch));

@@ -14,7 +14,7 @@ or
 /spawn special gun (amount=\<amount\>) (position={random, @me, @\<playername\>})
 
 ### GoOutWithABangMod
-Spawns a mine on player and triggers it when they die, unless they die to explosion or unknown  
+Spawns a mine on player and triggers it when they die, unless they die to explosion or unknown. (this can now be configured in the cfg file)  
 
 ### KarmaForBeingAnnoyingMod
 Blows up the player who uses any of the annoying scrap that makes sound (clown horn, blow horn, ...)

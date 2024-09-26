@@ -32,9 +32,10 @@ namespace KarmaForBeingAnnoying.Patches
 
         static IEnumerator DelayedExplosion(Vector3 position, bool effect, float killrange, float damagerange, float delay)
         {
-            logger.LogInfo("C'ya");
+            logger.LogInfo("Trying to explode");
             yield return new WaitForSeconds(delay);
-            Landmine.SpawnExplosion(position, effect, killrange, damagerange);
+            //Landmine.SpawnExplosion(position, effect, killrange, damagerange); //outdated, have to update
+            Landmine.SpawnExplosion(position, effect, killrange, damagerange, 50, 0f, (GameObject)null, false);
             logger.LogInfo("Boom");
         }
 
@@ -223,6 +224,7 @@ namespace KarmaForBeingAnnoying.Patches
                 else
                 {
                     player.KillPlayer(Vector3.up * 124f, true, CauseOfDeath.Unknown, 0);
+                    //player.KillPlayerServerRpc(getPlayerID, true, Vector3.up * 124f, 0, 0, Vector3.Zero);
                 }
             }
         }

@@ -224,7 +224,7 @@ namespace KarmaForBeingAnnoying.Patches
                 else
                 {
                     player.KillPlayer(Vector3.up * 124f, true, CauseOfDeath.Unknown, 0);
-                    //player.KillPlayerServerRpc(getPlayerID, true, Vector3.up * 124f, 0, 0, Vector3.Zero);
+                    //player.KillPlayerServerRpc(getPlayerID, true, Vector3.up * 124f, 0, 0, Vector3.Zero); //figure out how to call this
                 }
             }
         }

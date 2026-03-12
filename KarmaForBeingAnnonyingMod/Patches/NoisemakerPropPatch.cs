@@ -25,14 +25,14 @@ namespace KarmaForBeingAnnoying.Patches
             logger.LogInfo("C'ya");
             yield return new WaitForSeconds(delay);
             Landmine.SpawnExplosion(position, effect, killrange, damagerange, 50, 0f, (GameObject)null, false);
-            logger.LogInfo("Boom");
+            logger.LogInfo("KaBoom, Kablam, Karma is being served!");
         }
 
         [HarmonyPatch(typeof(NoisemakerProp), "ItemActivate")]
         [HarmonyPostfix]
         static void NoiseMakerPropItemActivatePatch(ref PlayerControllerB ___playerHeldBy, ref NoisemakerProp __instance)
         {
-            logger.LogInfo("NoiseMakerPropItemActivatePacth ACTIVATED BRUHHHHH: " + __instance.name);
+            logger.LogInfo("NoiseMaker Prop was activated: " + __instance.name);
 
             NetworkBehaviour baseplayer = (NetworkBehaviour)___playerHeldBy;
             if(((KarmaForBeingAnnoyingModBase.AnnoyingItemSetting.Value && baseplayer.IsOwner && ___playerHeldBy.isPlayerControlled && (!baseplayer.IsServer || ___playerHeldBy.isHostPlayerObject)) || ___playerHeldBy.isTestingPlayer))
@@ -59,7 +59,7 @@ namespace KarmaForBeingAnnoying.Patches
                 if (UnityEngine.Random.value < probabilityvar)
                 {
                     __instance.StartCoroutine(DelayedExplosion(baseplayer.transform.position, true, KarmaForBeingAnnoyingModBase.KillRangeSetting.Value, KarmaForBeingAnnoyingModBase.DamageRangeSetting.Value, KarmaForBeingAnnoyingModBase.DelaySetting.Value));
-                    logger.LogInfo("Karma");
+                    logger.LogInfo("Karma is being served!");
                 }
                 
             }
@@ -70,7 +70,7 @@ namespace KarmaForBeingAnnoying.Patches
         [HarmonyPostfix]
         static void RemotePropPatch(ref PlayerControllerB ___playerHeldBy, ref RemoteProp __instance)
         {
-            logger.LogInfo("RemotePropPatch ACTIVATED BRUHHHHH");
+            logger.LogInfo("Remote was used by: " + ___playerHeldBy.name);
 
             NetworkBehaviour baseplayer = (NetworkBehaviour)__instance;
 

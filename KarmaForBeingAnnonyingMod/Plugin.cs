@@ -16,7 +16,7 @@ namespace KarmaForBeingAnnoying
     {
         private const string modGUID = "Chrigi.KarmaForBeingAnnoyingMod";
         private const string modName = "Karma For Being Annoying Mod";
-        private const string modVersion = "1.1.0";
+        private const string modVersion = "1.1.1";
 
         private readonly Harmony harmony = new Harmony(modGUID);
 
